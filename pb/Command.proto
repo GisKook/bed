@@ -1,0 +1,47 @@
+syntax="proto2";
+package Report;
+message BedControl{
+    required uint32 nBack =1;
+    required uint32 nLegCurl = 2;
+    required uint32 nHead =3;
+    required uint32 nLeg = 4;
+}
+message ToiletComplete{
+    required uint32 nStyle =1;
+    required uint32 nTime = 2;
+    required uint32 nWeight = 3;
+    required uint32 nWater = 4;
+    required uint32 nWind = 5;
+}
+message Command {
+    enum CommandType {
+        // up message
+        CMT_INVALID          = 0x0000;  // unillgle
+
+        CMT_REPLOGIN            = 0x0101;
+        CMT_REPONLINE           = 0x0102;
+        CMT_REPBEDRUN           = 0x0103;
+        CMT_REPMANUALBEDRUN             = 0x0104;
+        CMT_REPTOILET       = 0x0105;
+        CMT_REPMANUALTOILET       = 0x0106;
+        CMT_REPTOILETCOMPLETE     = 0x0107;
+
+        // down message
+        CMT_REQLOGIN            = 0x8101;
+        CMT_REQONLINE           = 0x8102;
+        CMT_REQBEDRUN           = 0x8103;
+        CMT_REQTOILET       = 0x8105;
+        CMT_REQDEDRESET               = 0x8106;
+    }
+    required CommandType type = 1;
+
+    optional  BedControl bed = 2;
+    optional ToiletComplete toilet = 3;
+}
+
+message ControlReport {
+    required  uint64  tid = 1;
+    required  uint32  serial_number = 2;
+
+    required  Command command = 3;
+}
