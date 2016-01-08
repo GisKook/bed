@@ -1,0 +1,23 @@
+{  
+	"NsqConfig":{  
+		"Addr":"192.168.2.66:4150",
+			"UpTopic":"sha2app",
+			"DownTopic":"app2sha",
+			"Downchannel":"ch"
+	},
+	"DbConfig":{  
+		"Host":"192.168.2.67",
+		"Port":"5432",
+		"User":"postgres",
+		"Passwd":"postgres",
+		"Dbname":"gateway",
+		"Monitortable":"passwd"
+	},
+	"ServerConfig":{
+		"ReadLimit":300,
+		"WriteLimit":3000000,
+		"ConnTimeout":5,
+		"ConnCheckInterval":6,
+		"ServerStatistics":10
+	}
+}
