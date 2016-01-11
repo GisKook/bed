@@ -16,12 +16,6 @@ type FeedbackAppControlPacket struct {
 }
 
 func (p *FeedbackAppControlPacket) Serialize() []byte {
-	var buf []byte
-	buf = append(buf, 0xAC)
-	gatewayid := make([]byte, 8)
-	binary.BigEndian.PutUint64(gatewayid, p.Uid)
-	buf = append(buf, gatewayid[2:]...)
-	buf = append(buf, 0xED)
 
 	return buf
 }
