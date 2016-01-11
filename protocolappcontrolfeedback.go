@@ -16,6 +16,12 @@ type FeedbackAppControlPacket struct {
 }
 
 func (p *FeedbackAppControlPacket) Serialize() []byte {
+	bedcontrol := &BedControl{
+		Back:    p.BackMotor,
+		LegCurl: p.LegBendingMotor,
+		Head:    HeadLiftingMotor,
+		Leg:     LegLiftingMotor,
+	}
 
 	return buf
 }

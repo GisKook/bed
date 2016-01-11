@@ -63,128 +63,42 @@ var Command_CommandType_value = map[string]int32{
 	"CMT_REQDEDRESET":       33030,
 }
 
-func (x Command_CommandType) Enum() *Command_CommandType {
-	p := new(Command_CommandType)
-	*p = x
-	return p
-}
 func (x Command_CommandType) String() string {
 	return proto.EnumName(Command_CommandType_name, int32(x))
 }
-func (x *Command_CommandType) UnmarshalJSON(data []byte) error {
-	value, err := proto.UnmarshalJSONEnum(Command_CommandType_value, data, "Command_CommandType")
-	if err != nil {
-		return err
-	}
-	*x = Command_CommandType(value)
-	return nil
-}
 
 type BedControl struct {
-	Back             *uint32 `protobuf:"varint,1,req,name=back" json:"back,omitempty"`
-	LegCurl          *uint32 `protobuf:"varint,2,req,name=legCurl" json:"legCurl,omitempty"`
-	Head             *uint32 `protobuf:"varint,3,req,name=head" json:"head,omitempty"`
-	Leg              *uint32 `protobuf:"varint,4,req,name=leg" json:"leg,omitempty"`
-	XXX_unrecognized []byte  `json:"-"`
+	Back    uint32 `protobuf:"varint,1,opt,name=back" json:"back,omitempty"`
+	LegCurl uint32 `protobuf:"varint,2,opt,name=legCurl" json:"legCurl,omitempty"`
+	Head    uint32 `protobuf:"varint,3,opt,name=head" json:"head,omitempty"`
+	Leg     uint32 `protobuf:"varint,4,opt,name=leg" json:"leg,omitempty"`
 }
 
 func (m *BedControl) Reset()         { *m = BedControl{} }
 func (m *BedControl) String() string { return proto.CompactTextString(m) }
 func (*BedControl) ProtoMessage()    {}
 
-func (m *BedControl) GetBack() uint32 {
-	if m != nil && m.Back != nil {
-		return *m.Back
-	}
-	return 0
-}
-
-func (m *BedControl) GetLegCurl() uint32 {
-	if m != nil && m.LegCurl != nil {
-		return *m.LegCurl
-	}
-	return 0
-}
-
-func (m *BedControl) GetHead() uint32 {
-	if m != nil && m.Head != nil {
-		return *m.Head
-	}
-	return 0
-}
-
-func (m *BedControl) GetLeg() uint32 {
-	if m != nil && m.Leg != nil {
-		return *m.Leg
-	}
-	return 0
-}
-
 type ToiletComplete struct {
-	Style            *uint32 `protobuf:"varint,1,req,name=style" json:"style,omitempty"`
-	Time             *uint32 `protobuf:"varint,2,req,name=time" json:"time,omitempty"`
-	Weight           *uint32 `protobuf:"varint,3,req,name=weight" json:"weight,omitempty"`
-	Water            *uint32 `protobuf:"varint,4,req,name=water" json:"water,omitempty"`
-	Wind             *uint32 `protobuf:"varint,5,req,name=wind" json:"wind,omitempty"`
-	XXX_unrecognized []byte  `json:"-"`
+	Style  uint32 `protobuf:"varint,1,opt,name=style" json:"style,omitempty"`
+	Time   uint32 `protobuf:"varint,2,opt,name=time" json:"time,omitempty"`
+	Weight uint32 `protobuf:"varint,3,opt,name=weight" json:"weight,omitempty"`
+	Water  uint32 `protobuf:"varint,4,opt,name=water" json:"water,omitempty"`
+	Wind   uint32 `protobuf:"varint,5,opt,name=wind" json:"wind,omitempty"`
 }
 
 func (m *ToiletComplete) Reset()         { *m = ToiletComplete{} }
 func (m *ToiletComplete) String() string { return proto.CompactTextString(m) }
 func (*ToiletComplete) ProtoMessage()    {}
 
-func (m *ToiletComplete) GetStyle() uint32 {
-	if m != nil && m.Style != nil {
-		return *m.Style
-	}
-	return 0
-}
-
-func (m *ToiletComplete) GetTime() uint32 {
-	if m != nil && m.Time != nil {
-		return *m.Time
-	}
-	return 0
-}
-
-func (m *ToiletComplete) GetWeight() uint32 {
-	if m != nil && m.Weight != nil {
-		return *m.Weight
-	}
-	return 0
-}
-
-func (m *ToiletComplete) GetWater() uint32 {
-	if m != nil && m.Water != nil {
-		return *m.Water
-	}
-	return 0
-}
-
-func (m *ToiletComplete) GetWind() uint32 {
-	if m != nil && m.Wind != nil {
-		return *m.Wind
-	}
-	return 0
-}
-
 type Command struct {
-	Type             *Command_CommandType `protobuf:"varint,1,req,name=type,enum=Report.Command_CommandType" json:"type,omitempty"`
-	Bed              *BedControl          `protobuf:"bytes,2,opt,name=bed" json:"bed,omitempty"`
-	Toilet           *ToiletComplete      `protobuf:"bytes,3,opt,name=toilet" json:"toilet,omitempty"`
-	XXX_unrecognized []byte               `json:"-"`
+	Type   Command_CommandType `protobuf:"varint,1,opt,name=type,enum=Report.Command_CommandType" json:"type,omitempty"`
+	Bed    *BedControl         `protobuf:"bytes,2,opt,name=bed" json:"bed,omitempty"`
+	Toilet *ToiletComplete     `protobuf:"bytes,3,opt,name=toilet" json:"toilet,omitempty"`
 }
 
 func (m *Command) Reset()         { *m = Command{} }
 func (m *Command) String() string { return proto.CompactTextString(m) }
 func (*Command) ProtoMessage()    {}
-
-func (m *Command) GetType() Command_CommandType {
-	if m != nil && m.Type != nil {
-		return *m.Type
-	}
-	return Command_CMT_INVALID
-}
 
 func (m *Command) GetBed() *BedControl {
 	if m != nil {
@@ -201,29 +115,14 @@ func (m *Command) GetToilet() *ToiletComplete {
 }
 
 type ControlReport struct {
-	Tid              *uint64  `protobuf:"varint,1,req,name=tid" json:"tid,omitempty"`
-	SerialNumber     *uint32  `protobuf:"varint,2,req,name=serial_number" json:"serial_number,omitempty"`
-	Command          *Command `protobuf:"bytes,3,req,name=command" json:"command,omitempty"`
-	XXX_unrecognized []byte   `json:"-"`
+	Tid          uint64   `protobuf:"varint,1,opt,name=tid" json:"tid,omitempty"`
+	SerialNumber uint32   `protobuf:"varint,2,opt,name=serial_number" json:"serial_number,omitempty"`
+	Command      *Command `protobuf:"bytes,3,opt,name=command" json:"command,omitempty"`
 }
 
 func (m *ControlReport) Reset()         { *m = ControlReport{} }
 func (m *ControlReport) String() string { return proto.CompactTextString(m) }
 func (*ControlReport) ProtoMessage()    {}
-
-func (m *ControlReport) GetTid() uint64 {
-	if m != nil && m.Tid != nil {
-		return *m.Tid
-	}
-	return 0
-}
-
-func (m *ControlReport) GetSerialNumber() uint32 {
-	if m != nil && m.SerialNumber != nil {
-		return *m.SerialNumber
-	}
-	return 0
-}
 
 func (m *ControlReport) GetCommand() *Command {
 	if m != nil {

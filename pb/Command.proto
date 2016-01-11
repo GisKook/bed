@@ -1,17 +1,17 @@
-syntax="proto2";
+syntax="proto3";
 package Report;
 message BedControl{
-    required uint32 back =1;
-    required uint32 legCurl = 2;
-    required uint32 head =3;
-    required uint32 leg = 4;
+    uint32 back =1;
+    uint32 legCurl = 2;
+    uint32 head =3;
+    uint32 leg = 4;
 }
 message ToiletComplete{
-    required uint32 style =1;
-    required uint32 time = 2;
-    required uint32 weight = 3;
-    required uint32 water = 4;
-    required uint32 wind = 5;
+    uint32 style =1;
+    uint32 time = 2;
+    uint32 weight = 3;
+    uint32 water = 4;
+    uint32 wind = 5;
 }
 message Command {
     enum CommandType {
@@ -31,15 +31,15 @@ message Command {
         CMT_REQTOILET       = 0x8105;
         CMT_REQDEDRESET               = 0x8106;
     }
-    required CommandType type = 1;
+    CommandType type = 1;
 
-    optional  BedControl bed = 2;
-    optional ToiletComplete toilet = 3;
+    BedControl bed = 2;
+    ToiletComplete toilet = 3;
 }
 
 message ControlReport {
-    required  uint64  tid = 1;
-    required  uint32  serial_number = 2;
+    uint64  tid = 1;
+    uint32  serial_number = 2;
 
-    required  Command command = 3;
+    Command command = 3;
 }
