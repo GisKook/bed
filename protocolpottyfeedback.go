@@ -9,6 +9,7 @@ import (
 type FeedbackPottyPacket struct {
 	Uid       uint64
 	SerialNum uint32
+	CmdType   uint8
 }
 
 func (p *FeedbackPottyPacket) Serialize() []byte {
@@ -19,9 +20,17 @@ func (p *FeedbackPottyPacket) Serialize() []byte {
 		Leg:     LegLiftingMotor,
 	}
 
-	command := &Command{
-		Type: Command_CMT_REPBEDRUN,
-		Bed:  bedcontrol,
+	command := nil
+	if p.CmdType == AppPottyFeedback {
+		command = &Command{
+			Type: Command_CMT_REPTOILET,
+			Bed:  bedcontrol,
+		}
+	} else {
+		command = &Command{
+			Type: Command_CMT_REPMANUALTOILET,
+			Bed:  bedcontrol,
+		}
 	}
 
 	report := &ControlReport{
@@ -35,7 +44,7 @@ func (p *FeedbackPottyPacket) Serialize() []byte {
 	return data
 }
 
-func ParsePottyFeedback(buffer []byte, c *Conn) *FeedbackPotty {
+func ParsePottyFeedback(buffer []byte, c *Conn, cmdtype uint8) *FeedbackPotty {
 	reader := bytes.NewReader(buffer)
 	reader.Seek(5, 0)
 	serialnumber_byte := make([]byte, 4)

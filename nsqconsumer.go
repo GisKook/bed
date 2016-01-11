@@ -1,4 +1,4 @@
-package sha
+package bed
 
 import (
 	"log"
@@ -38,21 +38,16 @@ func (s *NsqConsumer) recvNsq() {
 		log.Println("cmd %d\n", command.Type)
 		if err == nil {
 			switch command.Type {
-			case Report.Command_CMT_REQLOGIN:
-				packet := ParseNsqLogin(gatewayid, serialnum, command)
-				if packet != nil {
-					s.producer.Send(s.producer.GetTopic(), packet.Serialize())
-				}
-			case Report.Command_CMT_REQDEVICELIST:
+			case Report.Command_CMT_REQBEDRUN:
 				packet := ParseNsqDeviceList(gatewayid, serialnum, command)
-				//NewConns().GetConn(gatewayid).SendToGateway(packet)
+				//NewConns().GetConn(gatewayid).SendToBed(packet)
 				if packet != nil {
 					s.producer.Send(s.producer.GetTopic(), packet.Serialize())
 				}
 			case Report.Command_CMT_REQOP:
 				packet := ParseNsqOp(gatewayid, serialnum, command)
 				if packet != nil {
-					NewConns().GetConn(gatewayid).SendToGateway(packet)
+					NewConns().GetConn(gatewayid).SendToBed(packet)
 				}
 			case Report.Command_CMT_REQONLINE:
 				packet := ParseNsqCheckOnline(gatewayid, serialnum)
@@ -62,7 +57,7 @@ func (s *NsqConsumer) recvNsq() {
 			case Report.Command_CMT_REQSETDEVICENAME:
 				packet := ParseNsqSetDevicename(gatewayid, serialnum, command)
 				if packet != nil {
-					NewConns().GetConn(gatewayid).SendToGateway(packet)
+					NewConns().GetConn(gatewayid).SendToBed(packet)
 				}
 			case Report.Command_CMT_REQCHANGEPASSWD:
 				packet := ParseNsqChangePasswd(gatewayid, serialnum, command)
@@ -72,7 +67,7 @@ func (s *NsqConsumer) recvNsq() {
 			case Report.Command_CMT_REQDELDEVICE:
 				packet := ParseNsqDelDevice(gatewayid, serialnum, command)
 				if packet != nil {
-					NewConns().GetConn(gatewayid).SendToGateway(packet)
+					NewConns().GetConn(gatewayid).SendToBed(packet)
 				}
 			}
 		}

@@ -59,7 +59,7 @@ func CheckNsqProtocol(message []byte) (uint64, uint32, *Report.Command, error) {
 		log.Println("unmarshal error")
 		return 0, 0, nil, errors.New("unmarshal error")
 	} else {
-		gatewayid := command.Tid
+		bedid := command.Tid
 		serialnum := command.SerialNumber
 		cmd := command.GetCommand()
 

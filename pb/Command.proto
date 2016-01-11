@@ -19,16 +19,17 @@ message Command {
         CMT_INVALID             = 0x0000;  // unillgle
 
         CMT_REPBEDRUN           = 0x0103;
-        CMT_REPTOILET           = 0x0105;
+        CMT_REPTOILET           = 0x0104;
+	CMT_REPBEDRESET         = 0x0105;
+
         CMT_REPMANUALTOILET     = 0x0106;
+        CMT_REPMANUALBEDRUN     = 0x0107;
+        CMT_REPTOILETCOMPLETE   = 0x0108;
 
-        CMT_REPMANUALBEDRUN     = 0x0104;
-        CMT_REPTOILETCOMPLETE   = 0x0107;
         // down message
-
         CMT_REQBEDRUN           = 0x8103;
-        CMT_REQTOILET           = 0x8105;
-        CMT_REQDEDRESET         = 0x8106;
+        CMT_REQTOILET           = 0x8104;
+        CMT_REQBEDRESET         = 0x8105;
     }
     CommandType type = 1;
 

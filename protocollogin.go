@@ -26,7 +26,8 @@ func (p *LoginPacket) Serialize() []byte {
 	mac := make([]byte, 8)
 	binary.BigEndian.PutUint64(mac, p.Uid)
 	buf = append(buf, mac[2:]...)
-	checsum := CheckSum(buf[2:], 7)
+	sum := CheckSum(buf[2:], 7)
+	buf = append(buf, sum)
 	buf = append(buf, 0xED)
 
 	return buf

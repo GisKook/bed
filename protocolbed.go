@@ -85,16 +85,16 @@ func (this *BedProtocol) ReadPacket(c *gotcp.Conn) (gotcp.Packet, error) {
 				pkg := ParseHeart(pkgbyte)
 				return NewBedPacket(HeartBeat, pkg), nil
 			case AppControlFeedback:
-				pkg := ParseAppControlFeedback(pkgbyte, smconn)
+				pkg := ParseAppControlFeedback(pkgbyte, smconn, AppControlFeedback)
 				return NewBedPacket(AppControlFeedback, pkg), nil
 			case HandleControlFeedback:
-				pkg := ParseAppControlFeedback(pkgbyte, smconn)
+				pkg := ParseAppControlFeedback(pkgbyte, smconn, HandleControlFeedback)
 				return NewBedPacket(HandleControlFeedback, pkg), nil
 			case AppPottyFeedback:
-				pkg := ParsePottyFeedback(pkgbyte, smconn)
+				pkg := ParsePottyFeedback(pkgbyte, smconn, AppPottyFeedback)
 				return NewBedPacket(AppPottyFeedback, pkg), nil
 			case HandlePottyFeedback:
-				pkg := ParsePottyFeedback(pkgbyte, smconn)
+				pkg := ParsePottyFeedback(pkgbyte, smconn, HandlePottyFeedback)
 				return NewBedPacket(HandlePottyFeedback, pkg), nil
 			case AfterPotty:
 				pkg := ParseAfterPottyFeedback(pkgbyte, smconn)

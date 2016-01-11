@@ -31,36 +31,40 @@ const (
 	// up message
 	Command_CMT_INVALID           Command_CommandType = 0
 	Command_CMT_REPBEDRUN         Command_CommandType = 259
-	Command_CMT_REPTOILET         Command_CommandType = 261
+	Command_CMT_REPTOILET         Command_CommandType = 260
+	Command_CMT_REPBEDRESET       Command_CommandType = 261
 	Command_CMT_REPMANUALTOILET   Command_CommandType = 262
-	Command_CMT_REPMANUALBEDRUN   Command_CommandType = 260
-	Command_CMT_REPTOILETCOMPLETE Command_CommandType = 263
-	Command_CMT_REQBEDRUN         Command_CommandType = 33027
-	Command_CMT_REQTOILET         Command_CommandType = 33029
-	Command_CMT_REQDEDRESET       Command_CommandType = 33030
+	Command_CMT_REPMANUALBEDRUN   Command_CommandType = 263
+	Command_CMT_REPTOILETCOMPLETE Command_CommandType = 264
+	// down message
+	Command_CMT_REQBEDRUN   Command_CommandType = 33027
+	Command_CMT_REQTOILET   Command_CommandType = 33028
+	Command_CMT_REQBEDRESET Command_CommandType = 33029
 )
 
 var Command_CommandType_name = map[int32]string{
 	0:     "CMT_INVALID",
 	259:   "CMT_REPBEDRUN",
-	261:   "CMT_REPTOILET",
+	260:   "CMT_REPTOILET",
+	261:   "CMT_REPBEDRESET",
 	262:   "CMT_REPMANUALTOILET",
-	260:   "CMT_REPMANUALBEDRUN",
-	263:   "CMT_REPTOILETCOMPLETE",
+	263:   "CMT_REPMANUALBEDRUN",
+	264:   "CMT_REPTOILETCOMPLETE",
 	33027: "CMT_REQBEDRUN",
-	33029: "CMT_REQTOILET",
-	33030: "CMT_REQDEDRESET",
+	33028: "CMT_REQTOILET",
+	33029: "CMT_REQBEDRESET",
 }
 var Command_CommandType_value = map[string]int32{
 	"CMT_INVALID":           0,
 	"CMT_REPBEDRUN":         259,
-	"CMT_REPTOILET":         261,
+	"CMT_REPTOILET":         260,
+	"CMT_REPBEDRESET":       261,
 	"CMT_REPMANUALTOILET":   262,
-	"CMT_REPMANUALBEDRUN":   260,
-	"CMT_REPTOILETCOMPLETE": 263,
+	"CMT_REPMANUALBEDRUN":   263,
+	"CMT_REPTOILETCOMPLETE": 264,
 	"CMT_REQBEDRUN":         33027,
-	"CMT_REQTOILET":         33029,
-	"CMT_REQDEDRESET":       33030,
+	"CMT_REQTOILET":         33028,
+	"CMT_REQBEDRESET":       33029,
 }
 
 func (x Command_CommandType) String() string {

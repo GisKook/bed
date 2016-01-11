@@ -13,6 +13,7 @@ type FeedbackAppControlPacket struct {
 	HeadLiftingMotor uint8
 	LegLiftingMotor  uint8
 	SerialNum        uint32
+	CmdType          uint8
 }
 
 func (p *FeedbackAppControlPacket) Serialize() []byte {
@@ -23,9 +24,17 @@ func (p *FeedbackAppControlPacket) Serialize() []byte {
 		Leg:     LegLiftingMotor,
 	}
 
-	command := &Command{
-		Type: Command_CMT_REPBEDRUN,
-		Bed:  bedcontrol,
+	command := nil
+	if p.CmdType == AppControlFeedback {
+		command = &Command{
+			Type: Command_CMT_REPBEDRUN,
+			Bed:  bedcontrol,
+		}
+	} else {
+		command = &Command{
+			Type: Command_CMT_REPMANUALBEDRUN,
+			Bed:  bedcontrol,
+		}
 	}
 
 	report := &ControlReport{
@@ -39,7 +48,7 @@ func (p *FeedbackAppControlPacket) Serialize() []byte {
 	return data
 }
 
-func ParseAppControlFeedback(buffer []byte, c *Conn) *FeedbackAppControlPacket {
+func ParseAppControlFeedback(buffer []byte, c *Conn, cmdtype uint8) *FeedbackAppControlPacket {
 	reader := bytes.NewReader(buffer)
 	reader.Seek(3, 0)
 
@@ -60,5 +69,6 @@ func ParseAppControlFeedback(buffer []byte, c *Conn) *FeedbackAppControlPacket {
 		HeadLiftingMotor: headliftingmotor,
 		LegLiftingMotor:  legbendingmotor,
 		SerialNum:        serialnumber,
+		CmdType:          cmdtype,
 	}
 }

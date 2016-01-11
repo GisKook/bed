@@ -25,7 +25,7 @@ func (p *FeedbackAfterPottyPacket) Serialize() []byte {
 	}
 
 	command := &Command{
-		Type: Command_CMT_REPBEDRUN,
+		Type: Command_CMT_REPTOILETCOMPLETE,
 		Bed:  bedcontrol,
 	}
 

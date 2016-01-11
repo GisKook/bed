@@ -78,7 +78,7 @@ func (c *Conn) writeToclientLoop() {
 	}
 }
 
-func (c *Conn) SendToGateway(p gotcp.Packet) {
+func (c *Conn) SendToBed(p gotcp.Packet) {
 	c.packetNsqReceiveChan <- p
 }
 
