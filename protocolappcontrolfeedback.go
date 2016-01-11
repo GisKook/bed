@@ -2,14 +2,17 @@ package sha
 
 import (
 	"encoding/binary"
+	"github.com/giskook/bed/pb"
+	"github.com/golang/protobuf/proto"
 )
 
 type FeedbackAppControlPacket struct {
-	Uid             uint64
-	BedVersion      uint8
-	ProtocolVersion uint8
-
-	Result uint8
+	Uid              uint64
+	BackMotor        uint8
+	LegBendingMotor  uint8
+	HeadLiftingMotor uint8
+	LegLiftingMotor  uint8
+	SerialNum        uint32
 }
 
 func (p *FeedbackAppControlPacket) Serialize() []byte {
@@ -23,30 +26,26 @@ func (p *FeedbackAppControlPacket) Serialize() []byte {
 	return buf
 }
 
-func NewLoginPakcet(Uid uint64, BedVersion uint8, ProtocolVersion uint8) {
-	return &LoginPacket{
-		Uid:             Uid,
-		BedVersion:      BedVersion,
-		ProtocolVersion: ProtocolVersion,
-	}
-}
-
-func ParseLogin(buffer []byte, c *Conn) *LoginPacket {
+func ParseAppControlFeedback(buffer []byte, c *Conn) *FeedbackAppControlPacket {
 	reader := bytes.NewReader(buffer)
 	reader.Seek(3, 0)
-	uid := make([]byte, 6)
-	reader.Read(uid)
-	gid := []byte{0, 0}
-	gid = append(gid, uid...)
-	bedid = binary.BigEndian.Uint64(gid)
 
-	bedversion, _ := reader.ReadByte()
-	protocolversion, _ := reader.ReadByte()
+	backmotor, _ := reader.ReadByte()
+	legbendingmotor, _ := reader.ReadByte()
+	headliftingmotor, _ := reader.ReadByte()
+	legliftingmotor, _ := reader, ReadByte()
+	reader.Seek(6, 1)
 
-	NewGatewayHub().add(bedid, bedversion, protocolversion)
-	c.uid = bedid
-	c.SetStatus(ConnSuccess)
-	NewConns().Add(c)
+	serialnumber_byte := make([]byte, 4)
+	reader.Read(serialnumber_byte)
+	serialnumber := binary.BigEndian.Uint32(serialnumber_byte)
 
-	return NewLoginPakcet(bedid, bedversion, protocolversion)
+	return &FeedbackAppControlPacket{
+		Uid:              c.Uid,
+		BackMotor:        backmotor,
+		LegBendingMotor:  legbendingmotor,
+		HeadLiftingMotor: headliftingmotor,
+		LegLiftingMotor:  legbendingmotor,
+		SerialNum:        serialnumber,
+	}
 }

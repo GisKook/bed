@@ -85,7 +85,7 @@ func (this *BedProtocol) ReadPacket(c *gotcp.Conn) (gotcp.Packet, error) {
 				pkg := ParseHeart(pkgbyte)
 				return NewBedPacket(HeartBeat, pkg), nil
 			case AppControlFeedback:
-				pkg := ParseAppControl(pkgbyte, smconn)
+				pkg := ParseAppControlFeedback(pkgbyte, smconn)
 				return NewBedPacket(AppControlFeedback, pkg), nil
 			case HandleControlFeedback:
 				pkg := ParseHandleControlFeedback(pkgbyte)
