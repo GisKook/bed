@@ -1,4 +1,4 @@
-package sha
+package bed
 
 import (
 	"encoding/binary"
@@ -23,7 +23,20 @@ func (p *FeedbackAppControlPacket) Serialize() []byte {
 		Leg:     LegLiftingMotor,
 	}
 
-	return buf
+	command := &Command{
+		Type: Command_CMT_REPBEDRUN,
+		Bed:  bedcontrol,
+	}
+
+	report := &ControlReport{
+		Tid:          p.Uid,
+		SerialNumber: p.SerialNum,
+		Command:      command,
+	}
+
+	data, _ := proto.Marshal(report)
+
+	return data
 }
 
 func ParseAppControlFeedback(buffer []byte, c *Conn) *FeedbackAppControlPacket {

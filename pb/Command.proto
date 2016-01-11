@@ -16,20 +16,19 @@ message ToiletComplete{
 message Command {
     enum CommandType {
         // up message
-        CMT_INVALID          = 0x0000;  // unillgle
-
+        CMT_INVALID             = 0x0000;  // unillgle
 
         CMT_REPBEDRUN           = 0x0103;
-        CMT_REPTOILET       = 0x0105;
-        CMT_REPMANUALTOILET       = 0x0106;
+        CMT_REPTOILET           = 0x0105;
+        CMT_REPMANUALTOILET     = 0x0106;
 
-        CMT_REPMANUALBEDRUN             = 0x0104;
-        CMT_REPTOILETCOMPLETE     = 0x0107;
+        CMT_REPMANUALBEDRUN     = 0x0104;
+        CMT_REPTOILETCOMPLETE   = 0x0107;
         // down message
 
         CMT_REQBEDRUN           = 0x8103;
-        CMT_REQTOILET       = 0x8105;
-        CMT_REQDEDRESET               = 0x8106;
+        CMT_REQTOILET           = 0x8105;
+        CMT_REQDEDRESET         = 0x8106;
     }
     CommandType type = 1;
 

@@ -10,30 +10,28 @@ type HeartPacket struct {
 
 func (this *HeartPacket) Serialize() []byte {
 	var buf []byte
-	buf = append(buf, 0xCE)
-	buf = append(buf, 0x00)
-	buf = append(buf, 0x0B)
-	buf = append(buf, 0x80)
-	buf = append(buf, 0x02)
-	gatewayid := make([]byte, 8)
-	binary.BigEndian.PutUint64(gatewayid, this.Uid)
-	buf = append(buf, gatewayid[2:]...)
-	buf = append(buf, CheckSum(buf, uint16(len(buf))))
-	buf = append(buf, 0xCE)
+	buf = append(buf, 0xAA)
+	buf = append(buf, 7)
+	buf = append(buf, 0xFF)
+	mac := make([]byte, 8)
+	binary.BigEndian.PutUint64(mac, p.Uid)
+	buf = append(buf, mac[2:]...)
+	checsum := CheckSum(buf[2:], 7)
+	buf = append(buf, 0xED)
 
 	return buf
 }
 
-func NewHeartPacket(Uid uint64) *HeartPacket {
-	return &HeartPacket{
-		Uid: Uid,
-	}
-}
-
 func ParseHeart(buffer []byte) *HeartPacket {
-	gatewayid, reader := GetGatewayID(buffer)
-	reader.ReadByte()
-	reader.ReadByte()
+	reader := bytes.NewReader(buffer)
+	reader.Seek(3, 0)
+	uid := make([]byte, 6)
+	reader.Read(uid)
+	gid := []byte{0, 0}
+	gid = append(gid, uid...)
+	bedid = binary.BigEndian.Uint64(gid)
 
-	return NewHeartPacket(gatewayid)
+	return &HeartPacket{
+		Uid: bedid,
+	}
 }

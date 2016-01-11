@@ -1,4 +1,4 @@
-package sha
+package bed
 
 import (
 	"encoding/binary"
@@ -20,10 +20,13 @@ type LoginPacket struct {
 
 func (p *LoginPacket) Serialize() []byte {
 	var buf []byte
-	buf = append(buf, 0xAC)
-	gatewayid := make([]byte, 8)
-	binary.BigEndian.PutUint64(gatewayid, p.Uid)
-	buf = append(buf, gatewayid[2:]...)
+	buf = append(buf, 0xAA)
+	buf = append(buf, 7)
+	buf = append(buf, 0)
+	mac := make([]byte, 8)
+	binary.BigEndian.PutUint64(mac, p.Uid)
+	buf = append(buf, mac[2:]...)
+	checsum := CheckSum(buf[2:], 7)
 	buf = append(buf, 0xED)
 
 	return buf

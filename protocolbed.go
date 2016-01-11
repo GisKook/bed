@@ -1,4 +1,4 @@
-package sha
+package bed
 
 import (
 	"github.com/giskook/gotcp"
@@ -8,17 +8,17 @@ var (
 	Illegal  uint16 = 0
 	HalfPack uint16 = 255
 
-	Login                 uint16 = 1
-	HeartBeat             uint16 = 2
-	AppControlFeedback    uint16 = 3
-	HandleControlFeedback uint16 = 4
-	AppPottyFeedback      uint16 = 5
-	HandlePottyFeedback   uint16 = 6
-	AfterPotty            uint16 = 7
+	Login                 uint8 = 0
+	HeartBeat             uint8 = 255
+	AppControlFeedback    uint8 = 1
+	HandleControlFeedback uint8 = 2
+	AppPottyFeedback      uint8 = 3
+	HandlePottyFeedback   uint8 = 4
+	AfterPotty            uint8 = 5
 )
 
 type BedPacket struct {
-	Type   uint16
+	Type   uint8
 	Packet gotcp.Packet
 }
 
@@ -31,19 +31,19 @@ func (this *BedPacket) Serialize() []byte {
 	case AppControlFeedback:
 		return this.Packet.(*FeedbackAppControlPacket).Serialize()
 	case HandleControlFeedback:
-		return this.Packet.(*FeedbackHandleControlPacket).Serialize()
+		return this.Packet.(*FeedbackAppControlPacket).Serialize()
 	case AppPottyFeedback:
-		return this.Packet.(*FeedbackAppPottyPacket).Serialize()
+		return this.Packet.(*FeedbackPottyPacket).Serialize()
 	case HandlePottyFeedback:
-		return this.Packet.(*FeedbackeHandlePottyPacket).Serialize()
+		return this.Packet.(*FeedbackPottyPacket).Serialize()
 	case AfterPotty:
-		return this.Packet.(*AfterPottyPacket).Serialize()
+		return this.Packet.(*FeedbackAfterPottyPacket).Serialize()
 	}
 
 	return nil
 }
 
-func NewBedPacket(Type uint16, Packet gotcp.Packet) *BedPacket {
+func NewBedPacket(Type uint8, Packet gotcp.Packet) *BedPacket {
 	return &BedPacket{
 		Type:   Type,
 		Packet: Packet,
@@ -88,16 +88,16 @@ func (this *BedProtocol) ReadPacket(c *gotcp.Conn) (gotcp.Packet, error) {
 				pkg := ParseAppControlFeedback(pkgbyte, smconn)
 				return NewBedPacket(AppControlFeedback, pkg), nil
 			case HandleControlFeedback:
-				pkg := ParseHandleControlFeedback(pkgbyte)
+				pkg := ParseAppControlFeedback(pkgbyte, smconn)
 				return NewBedPacket(HandleControlFeedback, pkg), nil
 			case AppPottyFeedback:
-				pkg := ParseAppPottyFeedback(pkgbyte)
+				pkg := ParsePottyFeedback(pkgbyte, smconn)
 				return NewBedPacket(AppPottyFeedback, pkg), nil
 			case HandlePottyFeedback:
-				pkg := ParseHandlePottyFeedback(pkgbyte)
+				pkg := ParsePottyFeedback(pkgbyte, smconn)
 				return NewBedPacket(HandlePottyFeedback, pkg), nil
 			case AfterPotty:
-				pkg := ParseAfterPotty(pkgbyte)
+				pkg := ParseAfterPottyFeedback(pkgbyte, smconn)
 				return NewBedPacket(AfterPotty, pkg), nil
 
 			case Illegal:
