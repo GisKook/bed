@@ -1,6 +1,7 @@
 package bed
 
 import (
+	"bytes"
 	"encoding/binary"
 	"github.com/giskook/bed/pb"
 	"github.com/golang/protobuf/proto"
@@ -17,27 +18,27 @@ type FeedbackAppControlPacket struct {
 }
 
 func (p *FeedbackAppControlPacket) Serialize() []byte {
-	bedcontrol := &BedControl{
-		Back:    p.BackMotor,
-		LegCurl: p.LegBendingMotor,
-		Head:    HeadLiftingMotor,
-		Leg:     LegLiftingMotor,
+	bedcontrol := &Report.BedControl{
+		Back:    uint32(p.BackMotor),
+		LegCurl: uint32(p.LegBendingMotor),
+		Head:    uint32(p.HeadLiftingMotor),
+		Leg:     uint32(p.LegLiftingMotor),
 	}
 
-	command := nil
+	var command *Report.Command
 	if p.CmdType == AppControlFeedback {
-		command = &Command{
-			Type: Command_CMT_REPBEDRUN,
+		command = &Report.Command{
+			Type: Report.Command_CMT_REPBEDRUN,
 			Bed:  bedcontrol,
 		}
 	} else {
-		command = &Command{
-			Type: Command_CMT_REPMANUALBEDRUN,
+		command = &Report.Command{
+			Type: Report.Command_CMT_REPMANUALBEDRUN,
 			Bed:  bedcontrol,
 		}
 	}
 
-	report := &ControlReport{
+	report := &Report.ControlReport{
 		Tid:          p.Uid,
 		SerialNumber: p.SerialNum,
 		Command:      command,
@@ -55,7 +56,7 @@ func ParseAppControlFeedback(buffer []byte, c *Conn, cmdtype uint8) *FeedbackApp
 	backmotor, _ := reader.ReadByte()
 	legbendingmotor, _ := reader.ReadByte()
 	headliftingmotor, _ := reader.ReadByte()
-	legliftingmotor, _ := reader, ReadByte()
+	legliftingmotor, _ := reader.ReadByte()
 	reader.Seek(6, 1)
 
 	serialnumber_byte := make([]byte, 4)
@@ -63,11 +64,11 @@ func ParseAppControlFeedback(buffer []byte, c *Conn, cmdtype uint8) *FeedbackApp
 	serialnumber := binary.BigEndian.Uint32(serialnumber_byte)
 
 	return &FeedbackAppControlPacket{
-		Uid:              c.Uid,
+		Uid:              c.GetBedID(),
 		BackMotor:        backmotor,
 		LegBendingMotor:  legbendingmotor,
 		HeadLiftingMotor: headliftingmotor,
-		LegLiftingMotor:  legbendingmotor,
+		LegLiftingMotor:  legliftingmotor,
 		SerialNum:        serialnumber,
 		CmdType:          cmdtype,
 	}

@@ -5,8 +5,8 @@ import (
 )
 
 var (
-	Illegal  uint16 = 0
-	HalfPack uint16 = 255
+	Illegal  uint8 = 254
+	HalfPack uint8 = 253
 
 	Login                 uint8 = 0
 	HeartBeat             uint8 = 255

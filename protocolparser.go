@@ -1,12 +1,11 @@
-package sha
+package bed
 
 import (
 	"bytes"
-	"encoding/binary"
 	"errors"
 	"log"
 
-	"github.com/giskook/smarthome-access/pb"
+	"github.com/giskook/bed/pb"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -19,7 +18,7 @@ func CheckSum(cmd []byte, cmdlen uint16) byte {
 	return temp
 }
 
-func CheckProtocol(buffer *bytes.Buffer) (uint16, uint16) {
+func CheckProtocol(buffer *bytes.Buffer) (uint8, uint16) {
 	bufferlen := buffer.Len()
 	if bufferlen == 0 {
 		return Illegal, 0
@@ -36,10 +35,10 @@ func CheckProtocol(buffer *bytes.Buffer) (uint16, uint16) {
 		if int(pkglen) > bufferlen {
 			return HalfPack, 0
 		} else {
-			checksum := CheckSum(buffer.Bytes(), pkglen-2)
+			checksum := CheckSum(buffer.Bytes(), uint16(pkglen)-2)
 			if checksum == buffer.Bytes()[pkglen-2] && buffer.Bytes()[pkglen-1] == 0xCE {
 				cmdid := buffer.Bytes()[2]
-				return cmdid, pkglen
+				return cmdid, uint16(pkglen)
 			} else {
 				buffer.ReadByte()
 				CheckProtocol(buffer)
@@ -63,6 +62,6 @@ func CheckNsqProtocol(message []byte) (uint64, uint32, *Report.Command, error) {
 		serialnum := command.SerialNumber
 		cmd := command.GetCommand()
 
-		return gatewayid, serialnum, cmd, nil
+		return bedid, serialnum, cmd, nil
 	}
 }

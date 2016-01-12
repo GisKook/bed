@@ -1,4 +1,4 @@
-package sha
+package bed
 
 import (
 	"log"

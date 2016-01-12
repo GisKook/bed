@@ -1,9 +1,8 @@
 package bed
 
 import (
-	"github.com/giskook/smarthome-access/pb"
+	"github.com/giskook/bed/pb"
 	"github.com/golang/protobuf/proto"
-	"log"
 )
 
 type NsqBedResetAheadPacket struct {
@@ -12,10 +11,10 @@ type NsqBedResetAheadPacket struct {
 }
 
 func (p *NsqBedResetAheadPacket) Serialize() []byte {
-	command := &Command{
-		Type: Command_CMT_REPBEDRESET,
+	command := &Report.Command{
+		Type: Report.Command_CMT_REPBEDRESET,
 	}
-	report := &ControlReport{
+	report := &Report.ControlReport{
 		Tid:     p.Uid,
 		Command: command,
 	}
@@ -25,7 +24,7 @@ func (p *NsqBedResetAheadPacket) Serialize() []byte {
 }
 
 func ParseNsqBedResetAhead(serialnum uint32) *NsqBedResetAheadPacket {
-	return &NsqBedResetPacket{
+	return &NsqBedResetAheadPacket{
 		SerialNumber: serialnum,
 	}
 }

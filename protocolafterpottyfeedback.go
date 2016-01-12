@@ -1,6 +1,7 @@
 package bed
 
 import (
+	"bytes"
 	"encoding/binary"
 	"github.com/giskook/bed/pb"
 	"github.com/golang/protobuf/proto"
@@ -17,21 +18,22 @@ type FeedbackAfterPottyPacket struct {
 }
 
 func (p *FeedbackAfterPottyPacket) Serialize() []byte {
-	bedcontrol := &BedControl{
-		Back:    p.BackMotor,
-		LegCurl: p.LegBendingMotor,
-		Head:    HeadLiftingMotor,
-		Leg:     LegLiftingMotor,
+	afterpotty := &Report.ToiletComplete{
+		Style:  uint32(p.PottyType),
+		Time:   uint32(p.PottyTime),
+		Weight: uint32(p.PottyWeight),
+		Water:  uint32(p.WaterTemperature),
+		Wind:   uint32(p.CloudTemperature),
 	}
 
-	command := &Command{
-		Type: Command_CMT_REPTOILETCOMPLETE,
-		Bed:  bedcontrol,
+	command := &Report.Command{
+		Type:   Report.Command_CMT_REPTOILETCOMPLETE,
+		Toilet: afterpotty,
 	}
 
-	report := &ControlReport{
+	report := &Report.ControlReport{
 		Tid:          p.Uid,
-		SerialNumber: p.SerialNum,
+		SerialNumber: p.SerialNumber,
 		Command:      command,
 	}
 
@@ -53,15 +55,15 @@ func ParseAfterPottyFeedback(buffer []byte, c *Conn) *FeedbackAfterPottyPacket {
 	reader.Read(pottyweight_byte)
 	pottyweight := binary.BigEndian.Uint16(pottyweight_byte)
 
-	watertemperature := reader.ReadByte()
-	cloudtemperature := reader.ReadByte()
+	watertemperature, _ := reader.ReadByte()
+	cloudtemperature, _ := reader.ReadByte()
 
 	serialnumber_byte := make([]byte, 4)
 	reader.Read(serialnumber_byte)
 	serialnumber := binary.BigEndian.Uint32(serialnumber_byte)
 
 	return &FeedbackAfterPottyPacket{
-		Uid:              c.Uid,
+		Uid:              c.GetBedID(),
 		PottyType:        pottytype,
 		PottyTime:        pottytime,
 		PottyWeight:      pottyweight,

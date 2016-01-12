@@ -1,7 +1,6 @@
-package sha
+package bed
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -20,7 +19,7 @@ type BedHub struct {
 var bedhub *BedHub
 
 func (g *BedHub) Add(bedid uint64, bedversion uint8, protocolversion uint8) {
-	g.Bed[gatewayid] = &BedProperty{
+	g.Bed[bedid] = &BedProperty{
 		Uid:             bedid,
 		Bedversion:      bedversion,
 		Protocolversion: protocolversion,

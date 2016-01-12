@@ -1,4 +1,4 @@
-package sha
+package bed
 
 import (
 	"bytes"
@@ -54,7 +54,7 @@ func (c *Conn) Close() {
 	close(c.closeChan)
 }
 
-func (c *Conn) GetGatewayID() uint64 {
+func (c *Conn) GetBedID() uint64 {
 	return c.uid
 }
 func (c *Conn) GetBuffer() *bytes.Buffer {
@@ -150,28 +150,26 @@ func (this *Callback) OnConnect(c *gotcp.Conn) bool {
 func (this *Callback) OnClose(c *gotcp.Conn) {
 	conn := c.GetExtraData().(*Conn)
 	conn.Close()
-	NewConns().Remove(conn.GetGatewayID())
-	NewGatewayHub().Remove(conn.GetGatewayID())
+	NewConns().Remove(conn.GetBedID())
+	NewBedHub().Remove(conn.GetBedID())
 }
 
 func (this *Callback) OnMessage(c *gotcp.Conn, p gotcp.Packet) bool {
-	shaPacket := p.(*ShaPacket)
-	switch shaPacket.Type {
+	bedPacket := p.(*BedPacket)
+	switch bedPacket.Type {
 	case Login:
-		c.AsyncWritePacket(shaPacket, time.Second)
+		c.AsyncWritePacket(bedPacket, time.Second)
 	case HeartBeat:
-		c.AsyncWritePacket(shaPacket, time.Second)
-	case SendDeviceList:
+		c.AsyncWritePacket(bedPacket, time.Second)
+	case AppControlFeedback:
 		GetServer().GetProducer().Send(GetServer().GetTopic(), p.Serialize())
-	case OperateFeedback:
+	case HandleControlFeedback:
 		GetServer().GetProducer().Send(GetServer().GetTopic(), p.Serialize())
-	case Warn:
+	case AppPottyFeedback:
 		GetServer().GetProducer().Send(GetServer().GetTopic(), p.Serialize())
-	case AddDelDevice:
+	case HandlePottyFeedback:
 		GetServer().GetProducer().Send(GetServer().GetTopic(), p.Serialize())
-	case SetDevicenameFeedback:
-		GetServer().GetProducer().Send(GetServer().GetTopic(), p.Serialize())
-	case DelDeviceFeedback:
+	case AfterPotty:
 		GetServer().GetProducer().Send(GetServer().GetTopic(), p.Serialize())
 
 	}

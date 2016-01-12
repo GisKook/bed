@@ -1,6 +1,7 @@
 package bed
 
 import (
+	"bytes"
 	"encoding/binary"
 )
 
@@ -33,7 +34,7 @@ func (p *LoginPacket) Serialize() []byte {
 	return buf
 }
 
-func NewLoginPakcet(Uid uint64, BedVersion uint8, ProtocolVersion uint8) {
+func NewLoginPakcet(Uid uint64, BedVersion uint8, ProtocolVersion uint8) *LoginPacket {
 	return &LoginPacket{
 		Uid:             Uid,
 		BedVersion:      BedVersion,
@@ -48,12 +49,12 @@ func ParseLogin(buffer []byte, c *Conn) *LoginPacket {
 	reader.Read(uid)
 	gid := []byte{0, 0}
 	gid = append(gid, uid...)
-	bedid = binary.BigEndian.Uint64(gid)
+	bedid := binary.BigEndian.Uint64(gid)
 
 	bedversion, _ := reader.ReadByte()
 	protocolversion, _ := reader.ReadByte()
 
-	NewGatewayHub().add(bedid, bedversion, protocolversion)
+	NewBedHub().Add(bedid, bedversion, protocolversion)
 	c.uid = bedid
 	c.SetStatus(ConnSuccess)
 	NewConns().Add(c)

@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/bitly/go-nsq"
-	"github.com/giskook/smarthome-access/pb"
+	"github.com/giskook/bed/pb"
 )
 
 type NsqConsumerConfig struct {
@@ -51,7 +51,7 @@ func (s *NsqConsumer) recvNsq() {
 			case Report.Command_CMT_REQBEDRESET:
 				packetahead := ParseNsqBedResetAhead(serialnum)
 				if packetahead != nil {
-					s.producer.Send(s.producer.GetTopic(), packet.Serialize())
+					s.producer.Send(s.producer.GetTopic(), packetahead.Serialize())
 				}
 				packet := ParseNsqBedReset(serialnum)
 				if packet != nil {

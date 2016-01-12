@@ -1,9 +1,8 @@
 package bed
 
 import (
-	"github.com/giskook/smarthome-access/pb"
-	"github.com/golang/protobuf/proto"
-	"log"
+	"encoding/binary"
+	"github.com/giskook/bed/pb"
 )
 
 type NsqBedControlPacket struct {
@@ -31,7 +30,7 @@ func (p *NsqBedControlPacket) Serialize() []byte {
 	buf = append(buf, 0)
 	serialnum_byte := make([]byte, 4)
 	binary.BigEndian.PutUint32(serialnum_byte, p.SerialNumber)
-	buf = append(buf, serialnum_byte)
+	buf = append(buf, serialnum_byte...)
 	sum := CheckSum(buf[2:], 15)
 	buf = append(buf, sum)
 	buf = append(buf, 0xED)
@@ -42,9 +41,9 @@ func (p *NsqBedControlPacket) Serialize() []byte {
 func ParseNsqBedControl(serialnum uint32, command *Report.Command) *NsqBedControlPacket {
 	return &NsqBedControlPacket{
 		SerialNumber:     serialnum,
-		BackMotor:        command.Back,
-		LegBendingMotor:  command.LegCurl,
-		HeadLiftingMotor: command.HeadLiftingMotor,
-		LegLiftingMotor:  command.LegLiftingMotor,
+		BackMotor:        uint8(command.Bed.Back),
+		LegBendingMotor:  uint8(command.Bed.LegCurl),
+		HeadLiftingMotor: uint8(command.Bed.Head),
+		LegLiftingMotor:  uint8(command.Bed.Leg),
 	}
 }

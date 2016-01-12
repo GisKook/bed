@@ -1,4 +1,4 @@
-package sha
+package bed
 
 import (
 	"github.com/giskook/gotcp"
@@ -18,7 +18,6 @@ type Server struct {
 	srv              *gotcp.Server
 	nsqproducer      *NsqProducer
 	nsqconsumer      *NsqConsumer
-	database         *ExecDatabase
 	checkconnsticker *time.Ticker
 }
 
@@ -32,14 +31,13 @@ func GetServer() *Server {
 	return Gserver
 }
 
-func NewServer(srv *gotcp.Server, nsqproducer *NsqProducer, nsqconsumer *NsqConsumer, config *ServerConfig, db *ExecDatabase) *Server {
+func NewServer(srv *gotcp.Server, nsqproducer *NsqProducer, nsqconsumer *NsqConsumer, config *ServerConfig) *Server {
 	serverstatistics := GetConfiguration().GetServerStatistics()
 	return &Server{
 		config:           config,
 		srv:              srv,
 		nsqproducer:      nsqproducer,
 		nsqconsumer:      nsqconsumer,
-		database:         db,
 		checkconnsticker: time.NewTicker(time.Duration(serverstatistics) * time.Second),
 	}
 }
@@ -50,10 +48,6 @@ func (s *Server) GetProducer() *NsqProducer {
 
 func (s *Server) GetConsumer() *NsqConsumer {
 	return s.nsqconsumer
-}
-
-func (s *Server) GetDatabase() *ExecDatabase {
-	return s.database
 }
 
 func (s *Server) GetTopic() string {

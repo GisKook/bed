@@ -1,9 +1,7 @@
 package bed
 
 import (
-	"github.com/giskook/smarthome-access/pb"
-	"github.com/golang/protobuf/proto"
-	"log"
+	"encoding/binary"
 )
 
 type NsqBedPottyPacket struct {
@@ -19,7 +17,7 @@ func (p *NsqBedPottyPacket) Serialize() []byte {
 	buf = append(buf, 0)
 	serialnum_byte := make([]byte, 4)
 	binary.BigEndian.PutUint32(serialnum_byte, p.SerialNumber)
-	buf = append(buf, serialnum_byte)
+	buf = append(buf, serialnum_byte...)
 	sum := CheckSum(buf[2:], 7)
 	buf = append(buf, sum)
 	buf = append(buf, 0xED)

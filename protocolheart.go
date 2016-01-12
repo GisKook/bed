@@ -1,6 +1,7 @@
-package sha
+package bed
 
 import (
+	"bytes"
 	"encoding/binary"
 )
 
@@ -14,9 +15,10 @@ func (this *HeartPacket) Serialize() []byte {
 	buf = append(buf, 7)
 	buf = append(buf, 0xFF)
 	mac := make([]byte, 8)
-	binary.BigEndian.PutUint64(mac, p.Uid)
+	binary.BigEndian.PutUint64(mac, this.Uid)
 	buf = append(buf, mac[2:]...)
-	checsum := CheckSum(buf[2:], 7)
+	sum := CheckSum(buf[2:], 7)
+	buf = append(buf, sum)
 	buf = append(buf, 0xED)
 
 	return buf
@@ -29,7 +31,7 @@ func ParseHeart(buffer []byte) *HeartPacket {
 	reader.Read(uid)
 	gid := []byte{0, 0}
 	gid = append(gid, uid...)
-	bedid = binary.BigEndian.Uint64(gid)
+	bedid := binary.BigEndian.Uint64(gid)
 
 	return &HeartPacket{
 		Uid: bedid,
