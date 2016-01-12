@@ -7,7 +7,6 @@ import (
 )
 
 type NsqBedControlPacket struct {
-	BedID            uint64
 	SerialNumber     uint32
 	BackMotor        uint8
 	LegBendingMotor  uint8
@@ -40,9 +39,8 @@ func (p *NsqBedControlPacket) Serialize() []byte {
 	return buf
 }
 
-func ParseNsqBedControl(bedid uint64, serialnum uint32, command *Report.Command) *NsqBedControlPacket {
+func ParseNsqBedControl(serialnum uint32, command *Report.Command) *NsqBedControlPacket {
 	return &NsqBedControlPacket{
-		BedID:            gatewayid,
 		SerialNumber:     serialnum,
 		BackMotor:        command.Back,
 		LegBendingMotor:  command.LegCurl,

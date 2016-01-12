@@ -33,41 +33,29 @@ func NewNsqConsumer(config *NsqConsumerConfig, producer *NsqProducer) *NsqConsum
 func (s *NsqConsumer) recvNsq() {
 	s.consumer.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
 		data := message.Body
-		gatewayid, serialnum, command, err := CheckNsqProtocol(data)
+		bedid, serialnum, command, err := CheckNsqProtocol(data)
 		log.Println("recvnsq")
 		log.Println("cmd %d\n", command.Type)
 		if err == nil {
 			switch command.Type {
 			case Report.Command_CMT_REQBEDRUN:
-				packet := ParseNsqDeviceList(gatewayid, serialnum, command)
-				//NewConns().GetConn(gatewayid).SendToBed(packet)
+				packet := ParseNsqBedControl(serialnum, command)
 				if packet != nil {
+					NewConns().GetConn(bedid).SendToBed(packet)
+				}
+			case Report.Command_CMT_REQTOILET:
+				packet := ParseNsqPotty(serialnum)
+				if packet != nil {
+					NewConns().GetConn(bedid).SendToBed(packet)
+				}
+			case Report.Command_CMT_REQBEDRESET:
+				packetahead := ParseNsqBedResetAhead(serialnum)
+				if packetahead != nil {
 					s.producer.Send(s.producer.GetTopic(), packet.Serialize())
 				}
-			case Report.Command_CMT_REQOP:
-				packet := ParseNsqOp(gatewayid, serialnum, command)
-				if packet != nil {
-					NewConns().GetConn(gatewayid).SendToBed(packet)
-				}
-			case Report.Command_CMT_REQONLINE:
-				packet := ParseNsqCheckOnline(gatewayid, serialnum)
+				packet := ParseNsqBedReset(serialnum)
 				if packet != nil {
 					s.producer.Send(s.producer.GetTopic(), packet.Serialize())
-				}
-			case Report.Command_CMT_REQSETDEVICENAME:
-				packet := ParseNsqSetDevicename(gatewayid, serialnum, command)
-				if packet != nil {
-					NewConns().GetConn(gatewayid).SendToBed(packet)
-				}
-			case Report.Command_CMT_REQCHANGEPASSWD:
-				packet := ParseNsqChangePasswd(gatewayid, serialnum, command)
-				if packet != nil {
-					s.producer.Send(s.producer.GetTopic(), packet.Serialize())
-				}
-			case Report.Command_CMT_REQDELDEVICE:
-				packet := ParseNsqDelDevice(gatewayid, serialnum, command)
-				if packet != nil {
-					NewConns().GetConn(gatewayid).SendToBed(packet)
 				}
 			}
 		}
