@@ -35,8 +35,9 @@ func CheckProtocol(buffer *bytes.Buffer) (uint8, uint16) {
 		if int(pkglen) > bufferlen {
 			return HalfPack, 0
 		} else {
-			checksum := CheckSum(buffer.Bytes(), uint16(pkglen)-2)
-			if checksum == buffer.Bytes()[pkglen-2] && buffer.Bytes()[pkglen-1] == 0xCE {
+			checksum := CheckSum(buffer.Bytes()[2:], uint16(pkglen))
+            log.Println(checksum)
+			if checksum == buffer.Bytes()[bufferlen-2] && buffer.Bytes()[bufferlen-1] == 0xED {
 				cmdid := buffer.Bytes()[2]
 				return cmdid, uint16(pkglen)
 			} else {
