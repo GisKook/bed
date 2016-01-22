@@ -2,7 +2,7 @@ package bed
 
 import (
 	"github.com/giskook/gotcp"
-    "log"
+	"log"
 )
 
 var (
@@ -64,7 +64,7 @@ func (this *BedProtocol) ReadPacket(c *gotcp.Conn) (gotcp.Packet, error) {
 	for {
 		data := make([]byte, 2048)
 		readLengh, err := conn.Read(data)
-        log.Printf("recv %x",data[0:readLengh])
+		log.Printf("recv %x", data[0:readLengh])
 
 		if err != nil {
 			return nil, err
@@ -89,15 +89,21 @@ func (this *BedProtocol) ReadPacket(c *gotcp.Conn) (gotcp.Packet, error) {
 				pkg := ParseAppControlFeedback(pkgbyte, smconn, AppControlFeedback)
 				return NewBedPacket(AppControlFeedback, pkg), nil
 			case HandleControlFeedback:
+				bedpkg := ParseHandleControlFeedback(pkgbyte)
+				smconn.SendToBed(bedpkg)
 				pkg := ParseAppControlFeedback(pkgbyte, smconn, HandleControlFeedback)
 				return NewBedPacket(HandleControlFeedback, pkg), nil
 			case AppPottyFeedback:
 				pkg := ParsePottyFeedback(pkgbyte, smconn, AppPottyFeedback)
 				return NewBedPacket(AppPottyFeedback, pkg), nil
 			case HandlePottyFeedback:
+				bedpkg := ParseHandlePottyFeedback(pkgbyte)
+				smconn.SendToBed(bedpkg)
 				pkg := ParsePottyFeedback(pkgbyte, smconn, HandlePottyFeedback)
 				return NewBedPacket(HandlePottyFeedback, pkg), nil
 			case AfterPotty:
+				bedpkg := ParseAfterPottyTobedFeedback(pkgbyte)
+				smconn.SendToBed(bedpkg)
 				pkg := ParseAfterPottyFeedback(pkgbyte, smconn)
 				return NewBedPacket(AfterPotty, pkg), nil
 

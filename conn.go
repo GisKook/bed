@@ -142,7 +142,7 @@ func (this *Callback) OnConnect(c *gotcp.Conn) bool {
 
 	c.PutExtraData(conn)
 
-    NewConns().Add(conn)
+	NewConns().Add(conn)
 	conn.Do()
 
 	return true
