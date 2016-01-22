@@ -38,11 +38,11 @@ func NewConn(conn *gotcp.Conn, config *ConnConfig) *Conn {
 		config:               config,
 		readflag:             time.Now().Unix(),
 		writeflag:            time.Now().Unix(),
-		ticker:               time.NewTicker(time.Duration(config.HeartBeat) * time.Second),
+		ticker:               time.NewTicker(time.Duration(config.HeartBeat) * time.Second * 10),
 		packetNsqReceiveChan: make(chan gotcp.Packet, config.NsqChanLimit),
 		closeChan:            make(chan bool),
 		index:                0,
-		status:               ConnUnauth,
+		status:               ConnSuccess,
 	}
 }
 
@@ -113,7 +113,7 @@ func (c *Conn) checkHeart() {
 				return
 			}
 			if c.status == ConnUnauth {
-				log.Printf("unauth's gateway gatewayid %d\n", c.uid)
+				log.Printf("close connection %d\n", c.uid)
 				return
 			}
 		case <-c.closeChan:
@@ -142,6 +142,7 @@ func (this *Callback) OnConnect(c *gotcp.Conn) bool {
 
 	c.PutExtraData(conn)
 
+    NewConns().Add(conn)
 	conn.Do()
 
 	return true

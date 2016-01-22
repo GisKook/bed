@@ -2,6 +2,7 @@ package bed
 
 import (
 	"github.com/giskook/gotcp"
+    "log"
 )
 
 var (
@@ -63,6 +64,7 @@ func (this *BedProtocol) ReadPacket(c *gotcp.Conn) (gotcp.Packet, error) {
 	for {
 		data := make([]byte, 2048)
 		readLengh, err := conn.Read(data)
+        log.Printf("recv %x",data[0:readLengh])
 
 		if err != nil {
 			return nil, err
@@ -73,7 +75,6 @@ func (this *BedProtocol) ReadPacket(c *gotcp.Conn) (gotcp.Packet, error) {
 		} else {
 			buffer.Write(data[0:readLengh])
 			cmdid, pkglen := CheckProtocol(buffer)
-			//		log.Printf("recv box cmd %d \n", cmdid)
 
 			pkgbyte := make([]byte, pkglen)
 			buffer.Read(pkgbyte)

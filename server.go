@@ -72,6 +72,6 @@ func (s *Server) Stop() {
 func (s *Server) checkStatistics() {
 	for {
 		<-s.checkconnsticker.C
-		log.Printf("---------------------Totol Connections : %d---------------------\n", NewConns().GetCount())
+		log.Printf("---------------------Total Connections : %d---------------------\n", NewConns().GetCount())
 	}
 }

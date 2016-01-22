@@ -1,6 +1,6 @@
 {  
 	"NsqConfig":{  
-		"Addr":"192.168.2.66:4150",
+		"Addr":"192.168.8.178:4150",
 			"UpTopic":"sha2app",
 			"DownTopic":"app2sha",
 			"Downchannel":"ch"
@@ -8,7 +8,7 @@
 	"ServerConfig":{
 		"ReadLimit":300,
 		"WriteLimit":3000000,
-		"ConnTimeout":5,
+		"ConnTimeout":6,
 		"ConnCheckInterval":6,
 		"ServerStatistics":10
 	}
