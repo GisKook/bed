@@ -21,7 +21,7 @@ func main() {
 
 	checkError(err)
 	// creates a tcp listener
-	tcpAddr, err := net.ResolveTCPAddr("tcp4", ":8989")
+	tcpAddr, err := net.ResolveTCPAddr("tcp4", ":8992")
 	checkError(err)
 	listener, err := net.ListenTCP("tcp", tcpAddr)
 	checkError(err)

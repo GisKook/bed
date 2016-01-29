@@ -34,19 +34,23 @@ func (s *NsqConsumer) recvNsq() {
 	s.consumer.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
 		data := message.Body
 		bedid, serialnum, command, err := CheckNsqProtocol(data)
-		log.Println("recvnsq")
+		log.Printf("recvnsq bedid %x ", bedid)
 		log.Println("cmd %d\n", command.Type)
 		if err == nil {
 			switch command.Type {
 			case Report.Command_CMT_REQBEDRUN:
 				packet := ParseNsqBedControl(serialnum, command)
 				if packet != nil {
-					NewConns().GetConn(bedid).SendToBed(packet)
+					if NewConns().Check(bedid) {
+						NewConns().GetConn(bedid).SendToBed(packet)
+					}
 				}
 			case Report.Command_CMT_REQTOILET:
 				packet := ParseNsqPotty(serialnum)
 				if packet != nil {
-					NewConns().GetConn(bedid).SendToBed(packet)
+					if NewConns().Check(bedid) {
+						NewConns().GetConn(bedid).SendToBed(packet)
+					}
 				}
 			case Report.Command_CMT_REQBEDRESET:
 				packetahead := ParseNsqBedResetAhead(serialnum)
