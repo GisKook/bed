@@ -21,7 +21,7 @@ func (p *NsqBedControlPacket) Serialize() []byte {
 	buf = append(buf, p.BackMotor)
 	buf = append(buf, p.LegBendingMotor)
 	buf = append(buf, p.HeadLiftingMotor)
-	buf = append(buf, p.LegBendingMotor)
+	buf = append(buf, p.LegLiftingMotor)
 	buf = append(buf, 0)
 	buf = append(buf, 0)
 	buf = append(buf, 0)
