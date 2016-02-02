@@ -31,9 +31,14 @@ func (p *FeedbackAppControlPacket) Serialize() []byte {
 			Type: Report.Command_CMT_REPBEDRUN,
 			Bed:  bedcontrol,
 		}
-	} else {
+	} else if p.CmdType == HandleControlFeedback {
 		command = &Report.Command{
 			Type: Report.Command_CMT_REPMANUALBEDRUN,
+			Bed:  bedcontrol,
+		}
+	} else if p.CmdType == AppBedReset {
+		command = &Report.Command{
+			Type: Report.Command_CMT_REPBEDRESET,
 			Bed:  bedcontrol,
 		}
 	}

@@ -35,7 +35,7 @@ func (s *NsqConsumer) recvNsq() {
 		data := message.Body
 		bedid, serialnum, command, err := CheckNsqProtocol(data)
 		log.Printf("recvnsq bedid %x ", bedid)
-		log.Println("cmd %d\n", command.Type)
+		log.Printf("cmd %d\n", command.Type)
 		if err == nil {
 			switch command.Type {
 			case Report.Command_CMT_REQBEDRUN:
@@ -59,7 +59,9 @@ func (s *NsqConsumer) recvNsq() {
 				}
 				packet := ParseNsqBedReset(serialnum)
 				if packet != nil {
-					s.producer.Send(s.producer.GetTopic(), packet.Serialize())
+					if NewConns().Check(bedid) {
+						NewConns().GetConn(bedid).SendToBed(packet)
+					}
 				}
 			}
 		}

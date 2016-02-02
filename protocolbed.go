@@ -16,6 +16,7 @@ var (
 	AppPottyFeedback      uint8 = 3
 	HandlePottyFeedback   uint8 = 4
 	AfterPotty            uint8 = 5
+	AppBedReset           uint8 = 6
 )
 
 type BedPacket struct {
@@ -39,6 +40,8 @@ func (this *BedPacket) Serialize() []byte {
 		return this.Packet.(*FeedbackPottyPacket).Serialize()
 	case AfterPotty:
 		return this.Packet.(*FeedbackAfterPottyPacket).Serialize()
+	case AppBedReset:
+		return this.Packet.(*FeedbackAppControlPacket).Serialize()
 	}
 
 	return nil
@@ -106,6 +109,9 @@ func (this *BedProtocol) ReadPacket(c *gotcp.Conn) (gotcp.Packet, error) {
 				smconn.SendToBed(bedpkg)
 				pkg := ParseAfterPottyFeedback(pkgbyte, smconn)
 				return NewBedPacket(AfterPotty, pkg), nil
+			case AppBedReset:
+				pkg := ParseAppControlFeedback(pkgbyte, smconn, AppBedReset)
+				return NewBedPacket(AppBedReset, pkg), nil
 
 			case Illegal:
 			case HalfPack:
