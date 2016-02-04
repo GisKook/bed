@@ -1,6 +1,7 @@
 package bed
 
 import (
+	"errors"
 	"github.com/giskook/gotcp"
 	"log"
 )
@@ -17,6 +18,8 @@ var (
 	HandlePottyFeedback   uint8 = 4
 	AfterPotty            uint8 = 5
 	AppBedReset           uint8 = 6
+
+	ErrNotLogin = errors.New("do not login")
 )
 
 type BedPacket struct {
@@ -59,7 +62,6 @@ type BedProtocol struct {
 
 func (this *BedProtocol) ReadPacket(c *gotcp.Conn) (gotcp.Packet, error) {
 	smconn := c.GetExtraData().(*Conn)
-	smconn.UpdateReadflag()
 
 	buffer := smconn.GetBuffer()
 
@@ -78,6 +80,13 @@ func (this *BedProtocol) ReadPacket(c *gotcp.Conn) (gotcp.Packet, error) {
 		} else {
 			buffer.Write(data[0:readLengh])
 			cmdid, pkglen := CheckProtocol(buffer)
+			log.Println(cmdid)
+			log.Println(NewConns().Check(0))
+			if cmdid != Login && !NewConns().Check(smconn.GetBedID()) {
+				return nil, ErrNotLogin
+			}
+
+			smconn.UpdateReadflag()
 
 			pkgbyte := make([]byte, pkglen)
 			buffer.Read(pkgbyte)
